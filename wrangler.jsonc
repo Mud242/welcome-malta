@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "welcome-malta",
+  "compatibility_date": "2026-07-21",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "welcome-malta"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
