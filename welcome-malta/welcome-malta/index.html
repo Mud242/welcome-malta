@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#12325e">
+<title>Welcome Malta — Pre-Arrival Onboarding for EU Jobseekers</title>
+<style>
+  :root{
+    --navy:#12325e; --navy2:#0d2749; --blue:#1f6feb; --sky:#e8f1fd;
+    --red:#cf2b2b; --gold:#f2b01e; --ink:#1c2733; --mut:#5b6b7c;
+    --ok:#1a9e54; --warn:#e08a00; --stale:#c23a3a; --card:#ffffff;
+    --bg:#f4f7fb; --line:#dde5ef; --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
+       background:var(--bg); color:var(--ink); line-height:1.55}
+  a{color:var(--blue); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1060px; margin:0 auto; padding:0 18px}
+
+  /* ---------- Header ---------- */
+  header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 70%);
+         color:#fff; padding:34px 0 0}
+  .brand{letter-spacing:2px; font-size:12px; text-transform:uppercase;
+         color:#9db9dd; font-weight:600}
+  header h1{font-size:clamp(26px,4.4vw,40px); margin:6px 0 8px}
+  header p.sub{color:#c9d9ef; max-width:640px; font-size:16px}
+  .snapshot{display:flex; flex-wrap:wrap; gap:10px; margin:18px 0 0}
+  .chip{display:inline-flex; align-items:center; gap:7px; font-size:12.5px;
+        background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.22);
+        color:#eaf1fb; padding:5px 12px; border-radius:999px; cursor:pointer}
+  .chip button{background:none;border:none;color:inherit;cursor:pointer;
+        font:inherit;display:inline-flex;align-items:center;gap:7px;padding:0}
+  .dot{width:9px; height:9px; border-radius:50%; flex:0 0 9px}
+  .d-ok{background:var(--ok)} .d-warn{background:var(--warn)} .d-stale{background:var(--stale)}
+  .flags{display:flex; gap:14px; margin-top:14px; align-items:center}
+  .flags svg{border-radius:3px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.35)}
+  nav.top{display:flex; flex-wrap:wrap; gap:4px; margin-top:24px; padding-bottom:0}
+  nav.top a{color:#d7e5f7; padding:10px 12px; font-size:13.5px; font-weight:600;
+        border-radius:10px 10px 0 0}
+  nav.top a:hover{background:rgba(255,255,255,.12); text-decoration:none}
+
+  /* ---------- Progress ---------- */
+  .progressbar{position:sticky; top:0; z-index:50; background:#ffffffee;
+        backdrop-filter:blur(6px); border-bottom:1px solid var(--line); padding:10px 0}
+  .pb-inner{display:flex; align-items:center; gap:14px}
+  .pb-label{font-size:13px; font-weight:700; color:var(--navy); white-space:nowrap}
+  .pb-track{flex:1; height:9px; background:#e3eaf4; border-radius:99px; overflow:hidden}
+  .pb-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--blue),var(--ok));
+        transition:width .4s ease}
+  .pb-pct{font-size:13px; font-weight:700; color:var(--ink); min-width:44px; text-align:right}
+
+  /* ---------- Sections ---------- */
+  section{padding:38px 0 6px}
+  h2.sec{font-size:23px; color:var(--navy); display:flex; align-items:center; gap:11px}
+  h2.sec .n{background:var(--navy); color:#fff; width:32px; height:32px; flex:0 0 32px;
+        border-radius:9px; display:flex; align-items:center; justify-content:center;}
+  .sec-sub{color:var(--mut); margin:6px 0 22px; max-width:760px}
+
+  .grid{display:grid; gap:16px}
+  .grid.two{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  .grid.three{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .grid.four{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+        padding:20px; box-shadow:0 1px 3px rgba(18,50,94,.05)}
+  .card h3{font-size:16.5px; color:var(--navy); margin-bottom:8px; display:flex; gap:8px; align-items:center}
+  .card ul{margin:8px 0 4px 18px; font-size:14px; color:#33414f}
+  .card li{margin-bottom:6px}
+  .card p.body{font-size:14px; color:#33414f}
+  .v-badge{display:inline-flex; align-items:center; gap:6px; font-size:11.5px;
+        border-radius:999px; padding:3px 10px; margin-top:12px; font-weight:600;
+        border:1px solid var(--line); background:#f7fafd; color:var(--mut)}
+  .v-badge.ok{color:var(--ok)} .v-badge.warn{color:var(--warn)} .v-badge.stale{color:var(--stale)}
+  .srcline{margin-top:10px; font-size:12.5px; border-top:1px dashed var(--line); padding-top:9px}
+  .kpi{display:flex; flex-direction:column; gap:2px}
+  .kpi .big{font-size:27px; font-weight:800; color:var(--navy)}
+  .kpi .cap{font-size:12.5px; color:var(--mut)}
+  .tip{background:#fff8e8; border:1px solid #f2d99a; border-radius:10px;
+        padding:11px 14px; font-size:13.5px; margin-top:12px}
+  .tip b{color:#8a6200}
+  .danger{background:#fdeeee; border-color:#f0b9b9}
+  .danger b{color:#8a1f1f}
+  .gold{border-left:5px solid var(--gold)}
+  .portlet{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+  .portlet a{background:var(--sky); color:var(--navy); font-weight:600; font-size:13px;
+        padding:6px 12px; border-radius:999px; border:1px solid #c8dcf6}
+
+  .step{display:flex; gap:14px; margin-bottom:4px}
+  .step .rail{display:flex; flex-direction:column; align-items:center}
+  .step .no{width:28px; height:28px; flex:0 0 28px; border-radius:50%; background:var(--sky);
+        color:var(--navy); font-weight:800; font-size:13.5px; display:flex; align-items:center; justify-content:center;
+        border:2px solid var(--blue)}
+  .step .rail::after{content:""; width:2px; flex:1; background:var(--line); margin:3px 0}
+  .step:last-child .rail::after{display:none}
+  .step .body{padding-bottom:22px; font-size:14px}
+  .step .body b{color:var(--navy)}
+  .doc{font-size:12.5px; background:var(--sky); color:var(--navy); border-radius:7px;
+        padding:2px 8px; display:inline-block; margin:3px 4px 0 0; font-weight:600}
+
+  label.chk{display:flex; gap:12px; align-items:flex-start; background:var(--card);
+        border:1px solid var(--line); border-radius:11px; padding:12px 14px; cursor:pointer;
+        font-size:14px; transition:.2s}
+  label.chk:hover{border-color:var(--blue)}
+  label.chk input{width:19px; height:19px; margin-top:2px; accent-color:var(--ok); flex:0 0 19px}
+  label.chk.done{background:#f0faf4; border-color:#bfe3cd}
+  label.chk.done .txt{text-decoration:line-through; color:var(--mut)}
+  .phase{font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px;
+        color:var(--mut); margin:18px 0 8px}
+
+  .contact{display:flex; flex-direction:column; gap:6px; font-size:14px}
+  .contact .big{font-size:19px; font-weight:800; color:var(--navy)}
+
+  footer{background:var(--navy2); color:#b9cbe2; margin-top:60px; padding:34px 0; font-size:13px}
+  footer a{color:#9fc1f0}
+
+  .fab{position:fixed; right:20px; bottom:20px; z-index:80; border:none; cursor:pointer;
+        background:var(--red); color:#fff; font-weight:700; font-size:14.5px; padding:14px 20px;
+        border-radius:999px; box-shadow:0 6px 22px rgba(207,43,43,.4); display:flex; gap:9px; align-items:center}
+  .modal{position:fixed; inset:0; background:rgba(10,25,45,.55); z-index:100; display:none;
+        align-items:flex-end; justify-content:flex-end}
+  .modal.open{display:flex}
+  .panel{background:#fff; width:min(430px,94vw); height:min(620px,92vh); margin:16px;
+        border-radius:16px; display:flex; flex-direction:column; overflow:hidden;
+        box-shadow:0 18px 50px rgba(0,0,0,.35)}
+  .panel.wide{width:min(560px,94vw); height:auto; max-height:86vh}
+  .phead{background:var(--navy); color:#fff; padding:14px 16px; display:flex;
+        justify-content:space-between; align-items:center}
+  .phead .x{background:none; border:none; color:#fff; font-size:20px; cursor:pointer}
+  .pbody{flex:1; overflow:auto; padding:16px}
+  .msg{max-width:86%; padding:10px 13px; border-radius:13px; font-size:14px; margin-bottom:10px}
+  .msg.bot{background:#f0f4fa; border-bottom-left-radius:3px}
+  .msg.me{background:var(--blue); color:#fff; margin-left:auto; border-bottom-right-radius:3px}
+  .pinput{display:flex; gap:8px; padding:12px; border-top:1px solid var(--line)}
+  .pinput input{flex:1; border:1px solid var(--line); border-radius:9px; padding:10px; font-size:14px}
+  .pinput button{background:var(--blue); color:#fff; border:none; border-radius:9px;
+        padding:0 16px; font-weight:700; cursor:pointer}
+  .demo-banner{font-size:11.5px; text-align:center; background:#fff8e8; color:#8a6200; padding:6px}
+  table.health{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:10px}
+  table.health th, table.health td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line)}
+  table.health th{color:var(--mut); font-size:11px; text-transform:uppercase; letter-spacing:.5px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">EURES Malta Support Project</div>
+    <h1>Welcome Malta <span style="font-weight:300">🇲🇹</span></h1>
+    <p class="sub">Your step-by-step pre-arrival onboarding guide for EU/EEA &amp; Swiss workers moving to Malta:
+    job, papers, tax, bank, housing, family &amp; pets — before you board the plane.</p>
+    <div class="flags">
+      <svg width="34" height="23" viewBox="0 0 34 23"><rect width="34" height="23" fill="#003399"/>
+      <g fill="#FFCC00" transform="translate(17,11.5)">
+        <g id="s1"><path transform="translate(0,-7.5)" d="M0 0 L0.5 1.5 L2 1.55 L0.78 2.45 L1.2 3.9 L0 3 L-1.2 3.9 L-0.78 2.45 L-2 1.55 L-0.5 1.5 Z"/></g>
+        <use href="#s1" transform="rotate(30)"/><use href="#s1" transform="rotate(60)"/><use href="#s1" transform="rotate(90)"/>
+        <use href="#s1" transform="rotate(120)"/><use href="#s1" transform="rotate(150)"/><use href="#s1" transform="rotate(180)"/>
+        <use href="#s1" transform="rotate(210)"/><use href="#s1" transform="rotate(240)"/><use href="#s1" transform="rotate(270)"/>
+        <use href="#s1" transform="rotate(300)"/><use href="#s1" transform="rotate(330)"/>
+      </g></svg>
+      <svg width="34" height="23" viewBox="0 0 34 23"><rect width="17" height="23" fill="#fff"/><rect x="17" width="17" height="23" fill="#cf142b"/><path d="M5 3 h4 v2 h-1.5 v1.5 H6 V5 H5 Z" fill="#b0b7bf" stroke="#555" stroke-width=".4"/></svg>
+      <span style="font-size:12.5px;color:#9db9dd">Free movement of workers · Regulation (EU) No 492/2011</span>
+    </div>
+    <div class="snapshot" id="snapshot"></div>
+    <nav class="top">
+      <a href="#checklist">✅ Checklist</a>
+      <a href="#jobs">🔎 Job search</a>
+      <a href="#first">🪪 Papers</a>
+      <a href="#quals">🎓 Qualifications</a>
+      <a href="#bank">🏦 Banking</a>
+      <a href="#housing">🏠 Housing</a>
+      <a href="#living">📊 Living &amp; climate</a>
+      <a href="#work">⚖️ Rights</a>
+      <a href="#health">🏥 Health</a>
+      <a href="#move">🚌 Transport</a>
+      <a href="#family">👨‍👩‍👧 Family &amp; pets</a>
+      <a href="#eures">🤝 EURES</a>
+    </nav>
+  </div>
+</header>
+
+<div class="progressbar"><div class="wrap pb-inner">
+  <span class="pb-label">Your onboarding progress</span>
+  <div class="pb-track"><div class="pb-fill" id="pbfill"></div></div>
+  <span class="pb-pct" id="pbpct">0%</span>
+</div></div>
+
+<main class="wrap">
+
+<!-- ============ CHECKLIST ============ -->
+<section id="checklist">
+  <h2 class="sec"><span class="n">✓</span> Your relocation checklist</h2>
+  <p class="sec-sub">Tick items off as you go — progress is saved on this device. Order matters: several
+  steps unlock the next one (e.g. you need a registered address or job to unlock bank &amp; healthcare steps).</p>
+
+  <div class="phase">Phase 1 — Before you leave home</div>
+  <div class="grid">
+    <label class="chk" data-check="c1"><input type="checkbox"><span class="txt"><b>Valid EU passport or national ID card.</b> No visa or work permit needed — you may work in Malta from day one.</span></label>
+    <label class="chk" data-check="c2"><input type="checkbox"><span class="txt"><b>Sign a contract &amp; register on Jobsplus + EURES.</b> Jobsplus self-registration works <i>before</i> moving, with your current address (see Job search section).</span></label>
+    <label class="chk" data-check="c16"><input type="checkbox"><span class="txt"><b>Qualifications:</b> start MQRIC recognition online; if your profession is regulated in Malta, contact its warranting body early.</span></label>
+    <label class="chk" data-check="c17"><input type="checkbox"><span class="txt"><b>Portability &amp; taxes:</b> inform your tax department of your move; check the double-taxation treaty; request a <b>U1</b> from social security (and a <b>U2</b> if transferring unemployment benefit).</span></label>
+    <label class="chk" data-check="c3"><input type="checkbox"><span class="txt"><b>EHIC card</b> from your home country — emergency public healthcare for your first ~3 months.</span></label>
+    <label class="chk" data-check="c4"><input type="checkbox"><span class="txt"><b>Scans of documents:</b> contract, diplomas/certificates, birth &amp; marriage certs (family), driver's licence.</span></label>
+    <label class="chk" data-check="c5"><input type="checkbox"><span class="txt"><b>Budget reserve:</b> deposit (≈1 month's rent) + first month + agency fee if any + 3–4 weeks of living costs.</span></label>
+    <label class="chk" data-check="c18"><input type="checkbox"><span class="txt"><b>Flights + temporary accommodation</b> for the first 1–3 weeks — view long-term flats only in person.</span></label>
+    <label class="chk" data-check="c19"><input type="checkbox"><span class="txt"><b>If moving with family/pets:</b> EU Pet Passport + microchip + rabies vaccine; school records &amp; vaccination cards in English.</span></label>
+  </div>
+
+  <div class="phase">Phase 2 — First weeks in Malta</div>
+  <div class="grid">
+    <label class="chk" data-check="c20"><input type="checkbox"><span class="txt"><b>Arrived without a job?</b> Register as unemployed with Jobsplus (first-time registrants) — and present your U2 if you brought unemployment benefit.</span></label>
+    <label class="chk" data-check="c6"><input type="checkbox"><span class="txt"><b>Employment registered:</b> employer files the engagement form with Jobsplus (within ~4 working days) → your Social Security number is created.</span></label>
+    <label class="chk" data-check="c7"><input type="checkbox"><span class="txt"><b>Tax ID number</b> from the Commissioner for Revenue (see Papers section).</span></label>
+    <label class="chk" data-check="c8"><input type="checkbox"><span class="txt"><b>Residence registration within 3 months:</b> apply online for the eResidence document via Identità's Expatriates Portal.</span></label>
+    <label class="chk" data-check="c9"><input type="checkbox"><span class="txt"><b>Registered tenancy:</b> check your landlord registered your lease with the Housing Authority.</span></label>
+    <label class="chk" data-check="c10"><input type="checkbox"><span class="txt"><b>Bank account opened</b> — a multi-currency account (N26/Revolut) is a workable bridge meanwhile.</span></label>
+    <label class="chk" data-check="c22"><input type="checkbox"><span class="txt"><b>SIM card + utilities:</b> local prepaid SIM, internet contract (beware 18–24-month ties), electricity/water via ARMS.</span></label>
+    <label class="chk" data-check="c11"><input type="checkbox"><span class="txt"><b>MyTallinja card:</b> residents entitled to free standard bus fares — apply for your plan right away (≈10 working days to arrive).</span></label>
+  </div>
+
+  <div class="phase">Phase 3 — Settling in</div>
+  <div class="grid">
+    <label class="chk" data-check="c12"><input type="checkbox"><span class="txt"><b>Healthcare enrolment:</b> once you pay SSC, confirm entitlement at the Entitlement Unit (contract + payslips); later, get a Maltese EHIC for travel.</span></label>
+    <label class="chk" data-check="c23"><input type="checkbox"><span class="txt"><b>School enrolment</b> for children via the Ministry for Education; check the Free Childcare Scheme if both parents work/study.</span></label>
+    <label class="chk" data-check="c24"><input type="checkbox"><span class="txt"><b>Driving licence:</b> EU licences are valid; exchange at Transport Malta if you want a Maltese one — no test needed.</span></label>
+    <label class="chk" data-check="c25"><input type="checkbox"><span class="txt"><b>Integration:</b> free Maltese &amp; English courses, community centres, expat groups — small island, fast friendships.</span></label>
+    <label class="chk" data-check="c13"><input type="checkbox"><span class="txt"><b>Save key numbers:</b> emergency 112 · EURES Malta · DIER freephone 153 · Servizz.gov 2590 3000.</span></label>
+    <label class="chk" data-check="c14"><input type="checkbox"><span class="txt"><b>Talk to a EURES adviser</b> about follow-up support and the Targeted Mobility Scheme relocation allowance.</span></label>
+  </div>
+</section>
+
+<!-- ============ JOB SEARCH ============ -->
+<section id="jobs">
+  <h2 class="sec"><span class="n">1</span> Job search — start before you fly</h2>
+  <p class="sec-sub">Malta's Public Employment Service is <b>Jobsplus</b>. Its vacancies also appear on the
+  European EURES portal — so you can line everything up from home.</p>
+  <div class="grid two">
+    <div class="card" data-fact="jobsplus">
+      <h3>🏛️ Jobsplus — Maltese Public Employment Service</h3>
+      <div class="step"><div class="rail"><div class="no">1</div></div>
+        <div class="body"><b>Register for a free account:</b> click <i>Sign in</i> (top right) → <i>Sign up / Login via Self-Registration</i>.</div></div>
+      <div class="step"><div class="rail"><div class="no">2</div></div>
+        <div class="body"><b>EU nationals can register before moving</b> — use your current home address.</div></div>
+      <div class="step"><div class="rail"><div class="no">3</div></div>
+        <div class="body"><b>Upload your CV</b>, search &amp; apply, receive daily vacancy updates; employers can match your profile to openings.</div></div>
+      <div class="tip">✈️ <b>Moving without a job?</b> You can register as unemployed with Jobsplus in your first days (first-time registrants guidance) — tell EURES Malta you're coming and they'll walk you through it.</div>
+      <div class="srcline">Source: <a href="https://jobsplus.gov.mt" target="_blank" rel="noopener">jobsplus.gov.mt</a> · <a href="https://jobsplus.gov.mt/job-seekers-mt-MT-en-GB/guidance-services/first-time-registrants" target="_blank" rel="noopener">first-time registrants</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+    <div class="card" data-fact="portals">
+      <h3>🌐 The EURES portal</h3>
+      <ul>
+        <li>The <b>same jobs as Jobsplus</b> appear on <a href="https://eures.europa.eu" target="_blank" rel="noopener">eures.europa.eu</a> — <i>Search for a Job</i> → country: Malta</li>
+        <li>Create a <b>EURES CV profile</b> so Maltese employers and EURES advisers can find you</li>
+        <li>Need more channels? Ask your EURES adviser — they can point you to reputable, licensed recruitment options in Malta</li>
+      </ul>
+      <span class="v-badge" data-badge></span>
+    </div>
+  </div>
+  <div class="card gold" data-fact="tms" style="margin-top:16px">
+    <h3>💶 Targeted Mobility Scheme — money for your move</h3>
+    <p class="body">The <b>EURES Targeted Mobility Scheme (TMS)</b> provides <b>financial support to jobseekers moving for
+    work</b> and to employers hiring EU nationals — e.g. travel allowance, relocation support set by your
+    country's TMS service, and help with integration after starting. Apply <u>before</u> starting the new job —
+    you cannot claim retroactively. Ask the EURES adviser in your home country.</p>
+    <div class="srcline">Source: <a href="https://eures.europa.eu/eures-services/eures-targeted-mobility-scheme-tms_en" target="_blank" rel="noopener">eures.europa.eu — TMS</a> · adviser finder: <a href="https://europa.eu/eures/portal/um/search-for-advisers?lang=en" target="_blank" rel="noopener">europa.eu/eures/portal</a></div>
+    <span class="v-badge" data-badge></span>
+  </div>
+</section>
+
+<!-- ============ PAPERS ============ -->
+<section id="first">
+  <h2 class="sec"><span class="n">2</span> Papers in order: departure → work start → residence</h2>
+  <p class="sec-sub">The sequence below reflects how Maltese systems chain together. Do it in order and you
+  avoid most back-and-forth.</p>
+  <div class="grid two">
+
+    <div class="card" data-fact="portability">
+      <h3>📤 Before leaving home: social security &amp; benefits</h3>
+      <div class="step"><div class="rail"><div class="no">1</div></div>
+        <div class="body"><b>Get a U1 statement</b> from your social security institution — it may be required in Malta for access to social assistance.</div></div>
+      <div class="step"><div class="rail"><div class="no">2</div></div>
+        <div class="body"><b>Transferring unemployment benefit?</b> Apply for a <b>U2</b> document before departure and present it in Malta after registering as unemployed (time-limited window — ask your EURES adviser).</div></div>
+      <div class="step"><div class="rail"><div class="no">3</div></div>
+        <div class="body"><b>Posted temporarily by your employer?</b> Get an <b>A1 form</b> — it certifies which country's social security applies while in Malta.</div></div>
+      <div class="srcline">EU coordination rules: Reg. (EC) 883/2004 · help: <a href="https://europa.eu/eures/portal/um/search-for-advisers?lang=en" target="_blank" rel="noopener">find a EURES adviser in your country</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+
+    <div class="card" data-fact="taxId">
+      <h3>💶 Maltese Tax Identification Number (TIN)</h3>
+      <div class="step"><div class="rail"><div class="no">1</div></div>
+        <div class="body"><b>Apply to the Commissioner for Revenue (CFR)</b> — online or by form — to be entered in the tax register as an EU national taking up employment.</div></div>
+      <div class="step"><div class="rail"><div class="no">2</div></div>
+        <div class="body"><b>Documents:</b> EU ID/passport, employment contract or offer, Maltese address if available.</div></div>
+      <div class="step"><div class="rail"><div class="no">3</div></div>
+        <div class="body"><b>Your employer then</b> deducts income tax and SSC automatically at source under the Final Settlement System (FSS) — employees normally don't file a return.</div></div>
+      <div class="tip">💡 <b>Tip:</b> in person at CFR TaxPayer Services (Floriana) or online via cfr.gov.mt → Tax registration for EU citizens.</div>
+      <div class="srcline">Source: <a href="https://cfr.gov.mt" target="_blank" rel="noopener">cfr.gov.mt</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+
+    <div class="card" data-fact="dtc">
+      <h3>🌍 Double taxation — check before you move</h3>
+      <ul>
+        <li>Inform your home tax department of your <b>departure and destination</b> before leaving.</li>
+        <li>Malta has an extensive <b>double taxation treaty network</b> (70+ countries); the treaty decides where your salary is taxed and prevents paying twice.</li>
+        <li>Once resident &amp; employed in Malta, employment income is generally taxed in Malta at progressive resident rates (0–35%).</li>
+      </ul>
+      <div class="srcline">Source: <a href="https://cfr.gov.mt" target="_blank" rel="noopener">cfr.gov.mt</a> — Double Taxation Agreements</div>
+      <span class="v-badge" data-badge></span>
+    </div>
+
+    <div class="card" data-fact="socialSecurity">
+      <h3>🔢 Social Security number (via Jobsplus)</h3>
+      <div class="step"><div class="rail"><div class="no">1</div></div>
+        <div class="body"><b>Sign your contract.</b> Your employer is legally obliged to register new employees with Jobsplus.<br>
+        <span class="doc">Deadline for employer: within ~4 working days of start</span></div></div>
+      <div class="step"><div class="rail"><div class="no">2</div></div>
+        <div class="body"><b>Registration creates your Social Security (SSC) number</b> — driving Class 1 contributions (pension, sickness, healthcare).</div></div>
+      <div class="step"><div class="rail"><div class="no">3</div></div>
+        <div class="body"><b>Keep the confirmation.</b> Ask your employer for the engagement confirmation for your records.</div></div>
+      <div class="srcline">Source: <a href="https://jobsplus.gov.mt" target="_blank" rel="noopener">jobsplus.gov.mt</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+
+    <div class="card" data-fact="eResidence">
+      <h3>🪪 eResidence document (stays over 3 months)</h3>
+      <div class="step"><div class="rail"><div class="no">1</div></div>
+        <div class="body"><b>Apply online</b> on the Identità Expatriates Portal — upon arrival with a job; you may apply in advance too.</div></div>
+      <div class="step"><div class="rail"><div class="no">2</div></div>
+        <div class="body"><b>Identità responds within ~48 working hours</b> with your biometrics appointment, the form and the document list.</div></div>
+      <div class="step"><div class="rail"><div class="no">3</div></div>
+        <div class="body"><b>Attend biometrics</b> with originals; your eResidence card is issued on your basis of residence (e.g. worker).</div></div>
+      <div class="doc">📎 Employment contract or Jobsplus registration</div>
+      <div class="doc">📎 Passport / EU ID card</div>
+      <div class="doc">📎 Maltese address</div>
+      <div class="srcline">Sources: <a href="https://expatriates.identita.gov.mt/" target="_blank" rel="noopener">Expatriates Portal</a> · <a href="https://identita.gov.mt" target="_blank" rel="noopener">identita.gov.mt</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ QUALIFICATIONS ============ -->
+<section id="quals">
+  <h2 class="sec"><span class="n">3</span> Qualifications &amp; regulated professions</h2>
+  <p class="sec-sub">Skip this at your peril: starting <i>before</i> you move can save weeks of waiting in Malta.</p>
+  <div class="grid two">
+    <div class="card" data-fact="qualsRegulated">
+      <h3>📜 Regulated professions — warrant first</h3>
+      <ul>
+        <li>Nurses, teachers, architects, electricians, pharmacists… if your profession is <b>regulated in Malta</b>, you must first contact the national profession's body/council to <b>apply for a warrant or register</b>.</li>
+        <li>Only then may you practise — check the official list before accepting an offer.</li>
+      </ul>
+      <div class="srcline">Source: <a href="https://mfhea.mt/list-of-regulated-professions-and-competent-authorities/" target="_blank" rel="noopener">MFHEA — regulated professions &amp; competent authorities</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+    <div class="card" data-fact="qualsMqric">
+      <h3>🎓 Recognition of qualifications (MQRIC)</h3>
+      <ul>
+        <li>Get your academic &amp; vocational qualifications <b>recognised</b> — employers (and warranting bodies) often ask for it.</li>
+        <li>The process runs <b>fully online</b> via the Malta Qualifications Recognition Information Centre (MQRIC, under MFHEA).</li>
+        <li>Have scans of diplomas + transcripts + translations ready.</li>
+      </ul>
+      <div class="srcline">Apply: <a href="https://services.mfhea.mt/CertificationApplication.aspx" target="_blank" rel="noopener">MQRIC online application</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BANKING ============ -->
+<section id="bank">
+  <h2 class="sec"><span class="n">4</span> Opening a bank account</h2>
+  <p class="sec-sub">All EU residents have the legal right to a basic payment account (EU Directive 2014/92/EU).
+  Maltese banks love paperwork — arrive prepared and the visit takes 30 minutes instead of 3 appointments.</p>
+  <div class="grid two">
+    <div class="card" data-fact="bankDocs">
+      <h3>📄 Usually requested documents</h3>
+      <ul>
+        <li>EU passport or national ID card</li>
+        <li>Proof of Maltese address — <b>registered</b> rental contract, or employer letter / recent utility bill</li>
+        <li>Employment contract or payslip</li>
+        <li>Maltese Tax ID number (many banks ask for it)</li>
+        <li>Some banks want a face-to-face appointment — book ahead</li>
+      </ul>
+      <div class="tip">💡 <b>Workaround:</b> ask your new employer which bank handles payroll — onboarding there is often faster; a basic payment account must legally offer core services at the lowest fee tier.</div>
+      <span class="v-badge" data-badge></span>
+    </div>
+    <div class="card">
+      <h3>🏦 Main retail banks in Malta</h3>
+      <ul>
+        <li><a href="https://www.bov.com" target="_blank" rel="noopener">Bank of Valletta (BOV)</a> — largest branch/ATM network</li>
+        <li><a href="https://www.hsbc.com.mt" target="_blank" rel="noopener">HSBC Malta</a></li>
+        <li><a href="https://www.apsbank.com.mt" target="_blank" rel="noopener">APS Bank</a></li>
+        <li><a href="https://www.bnf.bank/" target="_blank" rel="noopener">BNF Bank</a></li>
+      </ul>
+      <span class="v-badge" data-badge></span>
+    </div>
+  </div>
+  <div class="card" data-fact="multiCurrency" style="margin-top:16px">
+    <h3>💱 Smart bridge: multi-currency account (N26 / Revolut)</h3>
+    <p class="body">Many arrivals open a <b>free multi-currency account</b> (<a href="https://www.revolut.com" target="_blank" rel="noopener">Revolut</a>,
+    <a href="https://n26.com/en-eu" target="_blank" rel="noopener">N26</a>) on day one: instant EUR/IBAN for rent, deposits and daily spending while the
+    local bank processes your application. Payrolls: under the SEPA Regulation (EU 260/2012) an employer must
+    accept <b>any</b> SEPA IBAN you give them — local ATM coverage is the only real argument for a Maltese bank.</p>
+    <span class="v-badge" data-badge></span>
+  </div>
+</section>
+
+<!-- ============ HOUSING ============ -->
+<section id="housing">
+  <h2 class="sec"><span class="n">5</span> Housing &amp; the rental market</h2>
+  <p class="sec-sub">Rent is usually your biggest cost. The ranges below are an <b>orientation snapshot, not live prices</b> —
+  always confirm on live portals.</p>
+  <div class="grid three">
+    <div class="card" data-fact="rentSliema"><h3>Sliema / St Julian's / Gżira / Msida</h3>
+      <div class="kpi"><span class="big">€1,200+</span><span class="cap">indicative · 1-bedroom/month</span></div>
+      <ul><li>Highest prices, shortest commutes to work hubs</li><li>Strong demand — apartments go in days</li></ul>
+      <span class="v-badge" data-badge></span></div>
+    <div class="card" data-fact="rentCentral"><h3>Central: Mosta / Birkirkara / Naxxar</h3>
+      <div class="kpi"><span class="big">≈€800–1,100</span><span class="cap">indicative · 1-bedroom/month</span></div>
+      <ul><li>Good value; well connected by bus</li><li>Popular with commuters</li></ul>
+      <span class="v-badge" data-badge></span></div>
+    <div class="card" data-fact="rentNorth"><h3>North: St Paul's Bay / Qawra / Mellieħa</h3>
+      <div class="kpi"><span class="big">≈€850–1,100</span><span class="cap">indicative · 1-bedroom/month</span></div>
+      <ul><li>Touristic summer towns, quiet winters</li><li>Large expat communities</li></ul>
+      <span class="v-badge" data-badge></span></div>
+    <div class="card" data-fact="rentSouth"><h3>South: Żurrieq / Birżebbuġa / Marsascala</h3>
+      <div class="kpi"><span class="big">≈€700–950</span><span class="cap">indicative · 1-bedroom/month</span></div>
+      <ul><li>Cheapest per m² on the main island</li><li>Longer commutes to northern hubs</li></ul>
+      <span class="v-badge" data-badge></span></div>
+    <div class="card" data-fact="rentGozo"><h3>Gozo: Victoria / Marsalforn / Xagħra</h3>
+      <div class="kpi"><span class="big">≈€600–850</span><span class="cap">indicative · 1-bedroom/month</span></div>
+      <ul><li>Calmer pace, lower prices</li><li>Commute = ferry (~25 min from Ċirkewwa)</li></ul>
+      <span class="v-badge" data-badge></span></div>
+    <div class="card"><h3>🔎 Live listings</h3>
+      <ul><li><a href="https://franksalt.com.mt/" target="_blank" rel="noopener">Frank Salt</a> · <a href="https://alliance.mt/" target="_blank" rel="noopener">Alliance</a> · <a href="https://www.quicklets.com.mt" target="_blank" rel="noopener">Quicklets</a></li>
+      <li><a href="https://www.maltapark.com" target="_blank" rel="noopener">Maltapark</a> — large classifieds (incl. private landlords)</li></ul></div>
+  </div>
+
+  <div class="grid two" style="margin-top:16px">
+    <div class="card" data-fact="rentRegistration">
+      <h3>⚖️ Your rights as a tenant</h3>
+      <ul>
+        <li><b>Every rental contract must be registered</b> by the landlord with the Housing Authority (Private Residential Leases Act, S.L. 604.01). Unregistered = on default statutory rates; get your copy.</li>
+        <li>Deposits are typically 1 month, held against damages/unpaid bills.</li>
+        <li>Agency fee, if an agent is used, is customarily ~half a month's rent from each side.</li>
+      </ul>
+      <div class="srcline">Source: <a href="https://housingauthority.gov.mt" target="_blank" rel="noopener">housingauthority.gov.mt</a> — rent registration</div>
+      <span class="v-badge" data-badge></span>
+    </div>
+    <div class="card" data-fact="tempSetup">
+      <h3>🧳 First days: temporary stay &amp; setup</h3>
+      <ul>
+        <li>Book <b>1–3 weeks of temporary accommodation</b> (hostel, aparthotel, Airbnb) — never commit to a long-term flat unseen.</li>
+        <li><b>SIM card:</b> prepaid from Epic / GO / Melita — also sold at the airport.</li>
+        <li><b>Utilities:</b> electricity &amp; water run through ARMS and usually follow the registered lease; choose <b>internet</b> carefully — Melita/GO/Epic contracts often lock you in 18–24 months; ask for monthly options.</li>
+        <li><b>Home insurance:</b> cheap contents cover protects that deposit argument later.</li>
+      </ul>
+      <span class="v-badge" data-badge></span>
+    </div>
+  </div>
+  <div class="card danger" data-fact="scams" style="margin-top:16px">
+    <h3>🚨 Rental-scam red flags</h3>
+    <ul>
+      <li>Price far below the ranges above for prime areas</li>
+      <li>"Send the deposit before viewing / I'm abroad, keys after payment"</li>
+      <li>Only WhatsApp contact, photo-only identity, no Housing Authority registration</li>
+    </ul>
+    <div class="tip danger">Rule of thumb: <b>No viewing → no payment.</b> Pay through traceable channels and keep the registration copy.</div>
+    <span class="v-badge" data-badge></span>
+  </div>
+</section>
+
+<!-- ============ COST OF LIVING & CLIMATE ============ -->
+<section id="living">
+  <h2 class="sec"><span class="n">6</span> Cost of living &amp; climate</h2>
+  <div class="grid three">
+    <div class="card" data-fact="costLiving">
+      <h3>💸 Budget orientation</h3>
+      <ul>
+        <li><b>Rent dominates</b> the budget (see ranges above)</li>
+        <li>Groceries &amp; eating out: roughly in line with / below much of N-Europe</li>
+        <li>Transport: cheapest item — free resident buses</li>
+        <li>Utilities: watch A/C in August &amp; heaters in damp January</li>
+      </ul>
+      <div class="srcline">Live crowdsourced comparison: <a href="https://www.numbeo.com/cost-of-living/in/Valletta" target="_blank" rel="noopener">Numbeo — Malta/Valletta</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+    <div class="card" data-fact="climate">
+      <h3>☀️ Climate</h3>
+      <ul>
+        <li>~3,000 hours of sunshine a year — among Europe's highest</li>
+        <li>Summers hot &amp; dry: ~30°C+, July–September</li>
+        <li>Winters mild but windy &amp; humid: 10–17°C, rain Nov–Feb (pack a jacket — houses lack insulation/central heating)</li>
+        <li>Sea swimming: roughly April→November</li>
+      </ul>
+      <div class="srcline">Source: <a href="https://maltametoffice.com/" target="_blank" rel="noopener">Malta Met Office</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+    <div class="card">
+      <h3>🧭 Good to know</h3>
+      <ul>
+        <li>Both <b>English &amp; Maltese</b> are official — all services work in English</li>
+        <li>Tap water is safe but desalinated — many buy bottled/refill</li>
+        <li>Currency: Euro · Plugs: UK-style 3-pin (bring adapters)</li>
+        <li>Time zone: CET/CEST</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORK & RIGHTS ============ -->
+<section id="work">
+  <h2 class="sec"><span class="n">7</span> Working conditions &amp; pay</h2>
+  <p class="sec-sub">Maltese employment law applies equally to EU nationals — Employment and Industrial Relations Act (EIRA), enforced by the DIER.</p>
+  <div class="grid three">
+    <div class="card" data-fact="minWage"><h3>💰 National minimum wage</h3>
+      <div class="kpi"><span class="big">€229.44<span style="font-size:15px;color:var(--mut)">/wk</span></span>
+      <span class="cap">2026 · whole-time, age 18+ · 17y: €222.66 · COLA €4.66/wk</span></div>
+      <div class="srcline">Source: <a href="https://dier.gov.mt/en/services/employment-conditions/wages/national-minimum-wage/" target="_blank" rel="noopener">DIER</a></div>
+      <span class="v-badge" data-badge></span></div>
+    <div class="card" data-fact="leave"><h3>🏖️ Leave &amp; hours</h3>
+      <ul><li>Standard full-time week: <b>40 h</b>; overtime mostly 1.5×/2×</li>
+          <li><b>25 working days</b> annual leave (pro-rata part-year)</li>
+          <li>Public holidays on top (14–15 per year)</li></ul>
+      <span class="v-badge" data-badge></span></div>
+    <div class="card" data-fact="probation"><h3>⏳ Probation &amp; deductions</h3>
+      <ul><li>Probation: <b>6 months</b> default (up to 1 year for higher-paid technical/managerial posts)</li>
+          <li>Tax + ~10% Class 1 social contributions are withheld automatically (FSS)</li>
+          <li>Gov't statutory bonus &amp; weekly allowance are paid on top of wage</li></ul>
+      <span class="v-badge" data-badge></span></div>
+  </div>
+  <div class="tip" style="margin-top:16px">🆘 Problems at work? <b>DIER</b> (Dept. for Industrial &amp; Employment Relations):
+  freephone <b>153</b> · <a href="https://dier.gov.mt" target="_blank" rel="noopener">dier.gov.mt</a> — confidential, free of charge.</div>
+</section>
+
+<!-- ============ HEALTH ============ -->
+<section id="health">
+  <h2 class="sec"><span class="n">8</span> Healthcare</h2>
+  <div class="grid two">
+    <div class="card" data-fact="healthBase">
+      <h3>🏥 How entitlement works for EU workers</h3>
+      <ul>
+        <li><b>European Health Insurance Card (EHIC)</b> from your home country: emergency public healthcare in Malta, valid for your first ~3 months.</li>
+        <li><b>Once you start working &amp; paying social security:</b> you receive the same public healthcare benefits as residents — present your work contract + payslips (EU Reg. 883/2004).</li>
+        <li>Main hospital: Mater Dei (Msida); local health centres in towns; pharmacists handle minor things.</li>
+        <li>Private top-up insurance is popular &amp; affordable — private GP visits ~€15–30 out-of-pocket.</li>
+      </ul>
+      <span class="v-badge" data-badge></span>
+    </div>
+    <div class="card"><h3>📞 Numbers worth saving</h3>
+      <div class="grid">
+        <div class="contact"><span class="big">112</span> Emergency — ambulance / police / fire</div>
+        <div class="contact"><span class="big">2545 3000</span> Mater Dei switchboard</div>
+        <div class="contact"><span class="big">Servizz.gov</span> 2590 3000 — all government services in one line</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRANSPORT ============ -->
+<section id="move">
+  <h2 class="sec"><span class="n">9</span> Getting around</h2>
+  <div class="grid four">
+    <div class="card" data-fact="tallinja"><h3>🚌 Free buses for residents</h3>
+      <ul><li>Residents entitled to <b>free standard day &amp; night fares</b> with a Tallinja card — since 2026 you select a plan: <b>MyTallinja Intro (free)</b> or MyTallinja Basic (€14.50).</li>
+          <li>Card delivery ≈ 10 working days — apply as soon as you have Maltese residence.</li></ul>
+      <div class="srcline">Source: <a href="https://www.publictransport.com.mt" target="_blank" rel="noopener">Malta Public Transport</a></div>
+      <span class="v-badge" data-badge></span></div>
+    <div class="card"><h3>⛴️ Gozo &amp; water links</h3>
+      <ul><li>Gozo Channel ferry: Ċirkewwa ↔ Mġarr (~25 min)</li>
+          <li>Fast ferry Valletta → Gozo (foot passengers); Sliema &amp; Three Cities ferries</li></ul></div>
+    <div class="card" data-fact="drivingExchange"><h3>🚗 Driving licence</h3>
+      <ul><li>EU licences are <b>valid in Malta</b> — drive on the <b>LEFT</b></li>
+          <li>Want a Maltese licence? <b>Exchange at Transport Malta</b> — no test required for EU licences</li>
+          <li>Parking is the real boss fight in Sliema/Gżira</li></ul>
+      <div class="srcline">Source: <a href="https://transport.gov.mt" target="_blank" rel="noopener">transport.gov.mt</a></div>
+      <span class="v-badge" data-badge></span></div>
+    <div class="card"><h3>🛴 Alt transport</h3>
+      <ul><li>e-scooters restricted on arterial roads</li>
+          <li>Ride hailing: Bolt / Uber local operators</li>
+          <li>Bikes: improving lanes, still a brave choice</li></ul></div>
+  </div>
+</section>
+
+<!-- ============ FAMILY & PETS ============ -->
+<section id="family">
+  <h2 class="sec"><span class="n">10</span> Family life &amp; pets</h2>
+  <div class="grid three">
+    <div class="card" data-fact="schools">
+      <h3>🏫 Schools &amp; childcare</h3>
+      <ul>
+        <li><b>State schools are free</b> for residents; tuition is largely English-medium with Maltese also taught; enrol via the Ministry for Education (proof of residence + vaccination records).</li>
+        <li>Church schools (donation-based) and independent schools are alternatives — early application advised.</li>
+        <li><b>Free Childcare Scheme</b> for children under school age when both parents work or study.</li>
+      </ul>
+      <div class="srcline">Source: <a href="https://education.gov.mt" target="_blank" rel="noopener">education.gov.mt</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+    <div class="card" data-fact="pets">
+      <h3>🐾 Bringing pets</h3>
+      <ul>
+        <li><b>EU Pet Passport</b> + ISO microchip + valid rabies vaccination (first jab: 21-day wait before travel)</li>
+        <li>Check airline/ferry rules early — some routes have limits</li>
+        <li>⚠️ Pet-friendly rentals are scarce: secure landlord permission <b>in writing</b> before signing</li>
+      </ul>
+      <span class="v-badge" data-badge></span>
+    </div>
+    <div class="card">
+      <h3>🫶 Integration</h3>
+      <ul>
+        <li>Free Maltese &amp; English courses (Jobsplus &amp; community centres)</li>
+        <li>Active expat communities on every coast — especially St Paul's Bay, Sliema, Gozo</li>
+        <li>Local councils run integration events — ask in your locality</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EURES ============ -->
+<section id="eures">
+  <h2 class="sec"><span class="n">11</span> EURES Malta — talk to a real person</h2>
+  <p class="sec-sub">EURES (European Employment Services) advisers give free, official support <b>before and after</b>
+  your move — job matching, CV help, living &amp; working conditions, TMS relocation support.</p>
+  <div class="grid two">
+    <div class="card" data-fact="euresContact">
+      <h3>🤝 EURES Malta (run by Jobsplus)</h3>
+      <div class="grid" style="gap:12px; margin-top:6px">
+        <div class="contact"><span class="big">eures@gov.mt</span> Email an adviser (replies during office hours)</div>
+        <div class="contact"><span class="big">+356 2220 1662</span> Jobsplus Contact Centre</div>
+        <div class="contact"><span class="big">Ħal Far BBG 3000</span> EURES office at the Jobsplus Training Centre, Mon–Fri mornings</div>
+      </div>
+      <div class="srcline">Sources: <a href="https://www.eures.com.mt" target="_blank" rel="noopener">eures.com.mt</a> · <a href="https://eures.europa.eu" target="_blank" rel="noopener">eures.europa.eu</a></div>
+      <span class="v-badge" data-badge></span>
+    </div>
+    <div class="card gold">
+      <h3>📖 Official deep-dive: Living &amp; Working in Malta</h3>
+      <p class="body">The EURES portal carries the full, continuously updated country file — wages, labour law,
+      taxes, social security, education, housing — maintained with the Maltese authorities. Read it alongside
+      this guide:</p>
+      <p class="body" style="margin-top:8px"><a href="https://eures.europa.eu/living-and-working/living-and-working-conditions-europe/living-and-working-conditions-malta_en" target="_blank" rel="noopener"><b>Living and working conditions — Malta ↗</b></a></p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3>💬 Ask the Welcome Malta assistant</h3>
+    <p style="font-size:14px; color:var(--mut)">Prototype demo of the in-app chat: answers come from the same verified snapshot as these guides.
+    In a production version it hands off to live EURES advisers.</p>
+    <button class="fab" style="position:static; margin-top:14px; box-shadow:none" onclick="openChat()">💬 Open demo chat</button>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Welcome Malta</b> is an informational prototype for demonstration purposes.
+    It is <u>not</u> an official government or EURES service and does not replace their advice.
+    Content snapshot: <b>21 July 2026</b>, in line with current EURES Malta guidance.
+    Every topic card links to the official source — the official pages always win if something differs.</p>
+    <p style="margin-top:8px">Spotted something outdated? <a href="mailto:content-review@example.org?subject=Welcome%20Malta%20—%20outdated%20info">Report it to the content team</a> ·
+    <a href="#" onclick="openHealth(); return false;">Content health dashboard</a> ·
+    GDPR: chat logs in a production build would require a privacy notice &amp; retention policy.</p>
+  </div>
+</footer>
+
+<!-- ============ CHAT MODAL ============ -->
+<div class="modal" id="chatModal">
+  <div class="panel">
+    <div class="phead"><span><b>Welcome Malta Assistant</b></span><button class="x" onclick="closeModals()">×</button></div>
+    <div class="demo-banner">DEMO assistant — answers use the 21 Jul 2026 snapshot, not live data. For live help: EURES Malta · eures@gov.mt · +356 2220 1662</div>
+    <div class="pbody" id="chatBody"></div>
+    <div class="pinput">
+      <input id="chatInput" placeholder="Ask about tax, banks, rent, schools, pets…" onkeydown="if(event.key==='Enter')sendMsg()">
+      <button onclick="sendMsg()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HEALTH MODAL ============ -->
+<div class="modal" id="healthModal">
+  <div class="panel wide">
+    <div class="phead"><span><b>Content health dashboard</b></span><button class="x" onclick="closeModals()">×</button></div>
+    <div class="pbody">
+      <p style="font-size:13.5px; color:var(--mut)">How this app fights its own biggest risk — stale information.
+      Every factual entry carries a verification date. Anything unverified for &gt;90 days turns amber,
+      &gt;180 days red, and rises to the top of the review queue. Entries below are the production backlog.</p>
+      <table class="health"><thead><tr><th>Topic</th><th>Verified</th><th>Age</th><th>Status</th><th>Official source</th></tr></thead>
+      <tbody id="healthBody"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   CONTENT REGISTRY — single source of truth for every factual claim.
+   In production this lives in a separate content.json / CMS so editors
+   never touch code. Each entry: when last verified against its source.
+===================================================================== */
+const REGISTRY = [
+ {key:"euresContact",   verified:"2026-07-21", label:"EURES Malta contacts & hours",        src:"https://www.eures.com.mt"},
+ {key:"jobsplus",       verified:"2026-07-21", label:"Jobsplus self-registration (pre-move)",src:"https://jobsplus.gov.mt"},
+ {key:"portals",        verified:"2026-07-21", label:"EURES portal job search",             src:"https://eures.europa.eu"},
+ {key:"tms",            verified:"2026-07-21", label:"Targeted Mobility Scheme (TMS)",      src:"https://eures.europa.eu"},
+ {key:"portability",    verified:"2026-07-21", label:"U1 / U2 / A1 portability documents",  src:"https://eures.europa.eu"},
+ {key:"dtc",            verified:"2026-07-21", label:"Double taxation treaty guidance",     src:"https://cfr.gov.mt"},
+ {key:"eResidence",     verified:"2026-07-21", label:"eResidence / Identità 3-month rule",  src:"https://identita.gov.mt"},
+ {key:"minWage",        verified:"2026-07-21", label:"National minimum wage (2026)",        src:"https://dier.gov.mt"},
+ {key:"tallinja",       verified:"2026-07-21", label:"MyTallinja free-fare plans",          src:"https://www.publictransport.com.mt"},
+ {key:"healthBase",     verified:"2026-07-21", label:"Healthcare entitlement (EHIC → SSC)",  src:"https://eures.europa.eu"},
+ {key:"qualsRegulated", verified:"2026-07-21", label:"Regulated professions — MFHEA list",  src:"https://mfhea.mt"},
+ {key:"qualsMqric",     verified:"2026-07-21", label:"MQRIC qualification recognition",     src:"https://services.mfhea.mt"},
+ {key:"multiCurrency",  verified:"2026-07-21", label:"Multi-currency banking bridge",       src:"https://www.revolut.com"},
+ {key:"tempSetup",      verified:"2026-07-21", label:"Temporary stay, SIM & utilities",     src:"https://www.epic.com.mt"},
+ {key:"costLiving",     verified:"2026-07-21", label:"Cost-of-living orientation (Numbeo)", src:"https://www.numbeo.com"},
+ {key:"climate",        verified:"2026-07-21", label:"Climate normals",                     src:"https://maltametoffice.com/"},
+ {key:"taxId",          verified:"2026-05-18", label:"Tax ID via Commissioner for Revenue", src:"https://cfr.gov.mt"},
+ {key:"socialSecurity", verified:"2026-04-02", label:"Jobsplus engagement & SSC number",    src:"https://jobsplus.gov.mt"},
+ {key:"rentRegistration",verified:"2026-04-25",label:"Mandatory rent registration",         src:"https://housingauthority.gov.mt"},
+ {key:"leave",          verified:"2026-04-15", label:"Leave / hours / public holidays",     src:"https://dier.gov.mt"},
+ {key:"probation",      verified:"2026-04-15", label:"Probation & FSS deductions",          src:"https://dier.gov.mt"},
+ {key:"schools",        verified:"2026-04-20", label:"Schools & Free Childcare Scheme",     src:"https://education.gov.mt"},
+ {key:"bankDocs",       verified:"2026-03-10", label:"Bank account document requirements",  src:"https://www.bov.com"},
+ {key:"rentCentral",    verified:"2026-03-20", label:"Rent snapshot — Central",             src:"https://www.maltapark.com"},
+ {key:"rentNorth",      verified:"2026-03-20", label:"Rent snapshot — North",               src:"https://www.maltapark.com"},
+ {key:"rentSouth",      verified:"2026-03-20", label:"Rent snapshot — South",               src:"https://www.maltapark.com"},
+ {key:"rentSliema",     verified:"2026-03-20", label:"Rent snapshot — Sliema/Gżira",        src:"https://www.maltapark.com"},
+ {key:"rentGozo",       verified:"2026-03-20", label:"Rent snapshot — Gozo",                src:"https://www.maltapark.com"},
+ {key:"pets",           verified:"2026-03-05", label:"Pet travel (EU Pet Passport)",        src:"https://europa.eu/youreurope"},
+ {key:"drivingExchange",verified:"2025-11-15", label:"Driving licence exchange (TM)",       src:"https://transport.gov.mt"},
+ {key:"scams",          verified:"2025-12-10", label:"Rental-scam guidance",                src:"https://www.mccaa.gov.mt"},
+];
+const AMBER_AFTER = 90, RED_AFTER = 180; // days
+
+function ageInDays(dateStr){ return Math.floor((Date.now() - new Date(dateStr+"T12:00:00").getTime())/86400000); }
+function statusOf(d){ return d < AMBER_AFTER ? "ok" : d < RED_AFTER ? "warn" : "stale"; }
+const FRESH_LABEL = {ok:"verified recently", warn:"needs re-verification soon", stale:"RE-VERIFY before relying"};
+
+function renderFreshness(){
+  let ok=0,warn=0,stale=0;
+  const rows = REGISTRY.map(e=>{
+    const d = ageInDays(e.verified); const st = statusOf(d);
+    if(st==="ok")ok++; else if(st==="warn")warn++; else stale++;
+    document.querySelectorAll(`[data-fact="${e.key}"] [data-badge]`).forEach(b=>{
+      b.classList.add(st);
+      b.innerHTML = `<span class="dot d-${st}"></span> Snapshot verified ${e.verified} · ${d}d ago — ${FRESH_LABEL[st]}`;
+    });
+    return {e,d,st};
+  }).sort((a,b)=>b.d-a.d);
+
+  document.getElementById("snapshot").innerHTML =
+    `<button class="chip" onclick="openHealth()"><span class="dot d-ok"></span> ${ok} topics verified <90d</button>
+     <button class="chip" onclick="openHealth()"><span class="dot d-warn"></span> ${warn} due for re-verification</button>
+     <button class="chip" onclick="openHealth()"><span class="dot d-stale"></span> ${stale} stale — queued</button>
+     <span class="chip">📅 Snapshot: 21 Jul 2026</span>`;
+
+  document.getElementById("healthBody").innerHTML = rows.map(({e,d,st})=>
+    `<tr><td><b>${e.label}</b></td><td>${e.verified}</td><td>${d} days</td>
+     <td><span class="dot d-${st}" style="display:inline-block;margin-right:6px"></span>${FRESH_LABEL[st]}</td>
+     <td><a href="${e.src}" target="_blank" rel="noopener">open source ↗</a></td></tr>`).join("");
+}
+
+/* ---- checklist with localStorage ---- */
+const CHK_KEY = "wm-checklist-v1";
+function loadChecks(){
+  let saved={}; try{ saved = JSON.parse(localStorage.getItem(CHK_KEY)||"{}"); }catch(_){}
+  const boxes = [...document.querySelectorAll("[data-check]")];
+  boxes.forEach(l=>{
+    const id=l.dataset.check, inp=l.querySelector("input");
+    if(saved[id]){ inp.checked=true; l.classList.add("done"); }
+    inp.addEventListener("change",()=>{
+      saved[id]=inp.checked; localStorage.setItem(CHK_KEY,JSON.stringify(saved));
+      l.classList.toggle("done",inp.checked); updateProgress();
+    });
+  });
+  updateProgress();
+}
+function updateProgress(){
+  const boxes=[...document.querySelectorAll("[data-check] input")];
+  const done=boxes.filter(b=>b.checked).length;
+  const pct=Math.round(done/boxes.length*100);
+  document.getElementById("pbfill").style.width=pct+"%";
+  document.getElementById("pbpct").textContent=pct+"%";
+}
+
+/* ---- modals ---- */
+function openChat(){ document.getElementById("chatModal").classList.add("open");
+  if(!document.getElementById("chatBody").children.length){
+    botSay("Hi! 👋 I can help with pre-arrival questions. Try: <b>tax</b>, <b>bank</b>, <b>rent</b>, <b>school</b>, <b>pet</b>, <b>qualification</b>, <b>U1</b>, <b>double tax</b>, <b>climate</b>, <b>EURES</b>…");
+  }}
+function openHealth(){ document.getElementById("healthModal").classList.add("open"); }
+function closeModals(){ document.querySelectorAll(".modal").forEach(m=>m.classList.remove("open")); }
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{ if(e.target===m) closeModals(); }));
+
+/* ---- demo rule-based assistant ---- */
+const INTENTS=[
+ [/tax id|tin|tax number|cfr|revenue/i, "For a Maltese <b>Tax ID</b>, apply to the Commissioner for Revenue (cfr.gov.mt) with your EU ID and employment contract. Your employer then deducts tax + ~10% social contributions at source (FSS)."],
+ [/double ?tax|treaty|dtc|taxed twice/i, "Before leaving, tell your home tax office your departure & destination. Malta has <b>70+ double taxation treaties</b> deciding where your salary is taxed so you're never taxed twice. Details: cfr.gov.mt → Double Taxation Agreements."],
+ [/u1|u2|a1|portab|unemployment benefit/i, "<b>U1</b>: get it from your social security institution — needed in Malta for social assistance. <b>U2</b>: transferring unemployment benefit? Apply before leaving and present it in Malta after registering as unemployed with Jobsplus. <b>A1</b>: if you're temporarily posted by your employer — it sets which country's social security applies."],
+ [/no job|without a job|unemployed|register as/i, "You can register as unemployed with Jobsplus even right after moving (first-time registrants guidance on jobsplus.gov.mt). Bring a U2 if you transferred unemployment benefit; ask EURES Malta for details."],
+ [/bank|account|iban|revolut|n26|currency/i, "Local banks (BOV, HSBC, APS, BNF) ask for: EU ID, <b>registered</b> rental contract, contract/payslip, Tax ID. Smart bridge: a free <b>multi-currency account</b> (Revolut/N26) from day one — SEPA law obliges employers to accept any SEPA IBAN for payroll."],
+ [/rent|flat|apart|house|housing|deposit|lease/i, "Orientation ranges: Sliema area €1,200+, Central/North ≈€850–1,100, South ≈€700–950, Gozo ≈€600–850 (1-bedroom, indicative). Book 1–3 weeks temporary stay first; never pay before a viewing; demand Housing Authority registration of your lease."],
+ [/minimum wage|salary|pay\b|wage/i, "2026 national minimum wage: <b>€229.44/week</b> whole-time (18+); 17y €222.66; COLA €4.66/wk. Source: DIER dier.gov.mt."],
+ [/eures|adviser|advisor|job search|find.{0,4}(a )?job/i, "EURES Malta (run by Jobsplus): email <b>eures@gov.mt</b>, contact centre <b>+356 2220 1662</b>, Ħal Far office (Mon–Fri mornings). Register on jobsplus.gov.mt <i>before moving</i> using your current address; the same jobs are on eures.europa.eu — ask your adviser about reputable further channels."],
+ [/tms|allowance|mobility|relocation|financial support|money.{0,10}move/i, "The <b>EURES Targeted Mobility Scheme (TMS)</b> gives financial support to jobseekers moving for work (travel + relocation allowance) and to employers hiring EU nationals. Apply <u>before</u> starting the job — no retroactive claims. Contact the EURES adviser in your home country."],
+ [/residence|eresidence|id card|permit|registration|identit/i, "Stays over 3 months → apply online for the <b>eResidence document</b> via expatriates.identita.gov.mt; Identità replies in ~48 working hours with your biometrics appointment. EU citizens need NO visa or work permit."],
+ [/qualification|recogni|mqric|mfhea|diploma|degree/i, "Get your qualifications recognised online via the <b>MQRIC application</b> (services.mfhea.mt). Start before you move — scans of diplomas, transcripts and translations speed it up."],
+ [/regulated|warrant|nurse|teacher|profession/i, "Regulated professions (nurses, teachers, architects, electricians…) need a <b>warrant/registration</b> from the Maltese competent body <u>before</u> practising. Full list: mfhea.mt → Regulated Professions and Competent Authorities."],
+ [/health|doctor|hospital|ehic|insurance/i, "<b>EHIC</b> = emergency public healthcare for your first ~3 months. Once working & paying social security, you get residents' benefits — show work contract + payslips. Emergency: 112. Private top-up insurance is cheap and common."],
+ [/bus|transport|tallinja|drive|driving|licen(c|s)e/i, "Residents entitled to free standard bus fares apply for a <b>MyTallinja</b> plan (Intro free / Basic €14.50, new 2026 pricing; ~10 working days). EU driving licences are valid — exchange at Transport Malta, no test; Malta drives on the LEFT."],
+ [/school|child|childcare|kindeg|nurser/i, "<b>State schools are free</b> and largely English-medium — enrol via the Ministry for Education (residence + vaccination records). The Free Childcare Scheme covers under-school-age children when both parents work or study. Church/independent schools are paid alternatives."],
+ [/pet|dog|cat\b|animal/i, "Bringing a pet: <b>EU Pet Passport</b> + ISO microchip + rabies vaccination (21-day wait after a first jab). Check airline/ferry rules, and secure <b>written</b> landlord permission — pet-friendly rentals are scarce."],
+ [/climate|weather|sun|summer|winter|temperature/i, "Expect ~3,000 hours of sun a year: hot dry summers (30°C+, Jul–Sep), mild windy humid winters (10–17°C, rain Nov–Feb). Sea swimming roughly April–November. Houses lack central heating — a warm jacket is not a joke."],
+ [/cost of living|groceries|expensive|cheap|numbeo|budget/i, "Rent is by far the biggest cost (see ranges in the Housing section); groceries/eating out sit around or below N-European levels; transport is the cheapest line item thanks to free resident buses. Live comparison: Numbeo — Malta/Valletta."],
+ [/hour|leave|holiday|vacation|overtime|contract\b/i, "Standard full-time week is 40h; annual leave 25 working days + public holidays; overtime typically 1.5×/2×; probation 6 months default. Enforced by DIER (freephone 153)."],
+ [/human|person|live agent|contact/i, "For a human: EURES Malta advisers — eures@gov.mt · +356 2220 1662 (Mon–Fri mornings, Ħal Far). In production this chat would hand you straight over."],
+ [/hello|hi\b|hey/i, "Hello! 🇲🇹 Ask me anything about relocating to Malta: jobs, papers, tax, U1/U2, qualifications, banks, rent, schools, pets, climate…"],
+];
+function botSay(html){ const d=document.createElement("div"); d.className="msg bot"; d.innerHTML=html; document.getElementById("chatBody").appendChild(d); d.scrollIntoView({behavior:"smooth"}); }
+function sendMsg(){
+  const inp=document.getElementById("chatInput"); const t=inp.value.trim(); if(!t) return;
+  const me=document.createElement("div"); me.className="msg me"; me.textContent=t;
+  document.getElementById("chatBody").appendChild(me); inp.value="";
+  setTimeout(()=>{
+    const hit=INTENTS.find(([re])=>re.test(t));
+    botSay(hit? hit[1] : "I'm a small demo with a limited knowledge base — try: <b>tax</b>, <b>double tax</b>, <b>U1</b>, <b>bank</b>, <b>rent</b>, <b>wage</b>, <b>EURES</b>, <b>residence</b>, <b>qualification</b>, <b>health</b>, <b>transport</b>, <b>school</b>, <b>pet</b>, <b>climate</b>, <b>TMS</b>. For everything else: EURES Malta · eures@gov.mt.");
+  },450);
+}
+
+renderFreshness(); loadChecks();
+</script>
+</body>
+</html>
